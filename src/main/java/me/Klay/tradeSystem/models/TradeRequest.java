@@ -1,4 +1,4 @@
-package me.Klay.tradeSystem;
+package me.Klay.tradeSystem.models;
 
 import org.bukkit.entity.Player;
 

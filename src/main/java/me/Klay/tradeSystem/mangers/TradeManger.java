@@ -1,5 +1,7 @@
-package me.Klay.tradeSystem;
+package me.Klay.tradeSystem.mangers;
 
+import me.Klay.tradeSystem.gui.TradeGUI;
+import me.Klay.tradeSystem.models.TradeRequest;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -42,7 +44,7 @@ public class TradeManger {
             return;
         }
         Player initiator = tradeRequest.getRequester();
-        removePlayerFromTradeRequest(player);
+        removemTradeRequest(player);
 
         if(!initiator .isOnline()){
             player.sendMessage(ChatColor.RED + "The trade request is no longer valid!");
@@ -51,9 +53,19 @@ public class TradeManger {
 
         }
         //start trade session
-        player.sendMessage(ChatColor.GREEN + "Trade session started!");
+        initiator.sendMessage(ChatColor.GREEN + player.getName() + " has accepted your trade request!");
+        player.sendMessage(ChatColor.GREEN + "You have accepted " + initiator.getName() + "'s trade request!");
+        startTradeSession(player, initiator);
+        removemTradeRequest(player);
 
     }
+    private void startTradeSession(Player player1 , Player player2) {
+        var tradeInventory = TradeGUI.createTradeInventory(player1, player2);
+        player1.openInventory(tradeInventory);
+        player2.openInventory(tradeInventory);
+    }
+
+
     public void handleTradeDeny(Player player) {
         var tradeRequest = getTradeRequest(player);
         if (tradeRequest == null) {
@@ -61,7 +73,7 @@ public class TradeManger {
             return;
         }
         Player initiator = tradeRequest.getRequester();
-        removePlayerFromTradeRequest(player);
+        removemTradeRequest(player);
 
         if(!initiator .isOnline()){
             player.sendMessage(ChatColor.RED + "The player denied the trade request");
@@ -70,11 +82,11 @@ public class TradeManger {
 
         }
         player.sendMessage(ChatColor.RED + player.getName() + " has denied your trade request!");
-        removePlayerFromTradeRequest(player);
+        removemTradeRequest(player);
 
 
     }
-    private void removePlayerFromTradeRequest(Player player) {
+    private void removemTradeRequest(Player player) {
         tradeRequests.get(player.getUniqueId());
     }
 

@@ -1,13 +1,11 @@
-package me.Klay.tradeSystem;
+package me.Klay.tradeSystem.commands;
 
+import me.Klay.tradeSystem.mangers.TradeManger;
 import org.bukkit.ChatColor;
-import org.bukkit.block.data.type.Switch;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.Locale;
 
 public class TradeCommand implements CommandExecutor {
 
