@@ -1,0 +1,10 @@
+name: TradeSystem
+version: '1.0-SNAPSHOT'
+main: me.Klay.tradeSystem.TradeSystem
+api-version: '1.21'
+authors: [ Klay ]
+commands:
+  trade:
+    aliases: [ t ]
+    description: Trade with another player.
+    usage: /trade <player>
