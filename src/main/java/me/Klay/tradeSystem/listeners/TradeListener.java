@@ -1,4 +1,4 @@
-package me.Klay.tradeSystem.commands.listeners;
+package me.Klay.tradeSystem.listeners;
 
 import me.Klay.tradeSystem.TradeSystem;
 import me.Klay.tradeSystem.gui.TradeGUI;
@@ -17,7 +17,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.net.http.WebSocket;
 import java.util.HashMap;
 import java.util.stream.IntStream;
 
