@@ -6,12 +6,14 @@ import me.Klay.tradeSystem.models.TradeSession;
 import me.Klay.tradeSystem.utils.TradeConstants;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.net.http.WebSocket;
 import java.util.HashMap;
@@ -93,34 +95,81 @@ public class TradeListener implements Listener {
         }
 
     }
+    public void playTradeAnimation(TradeSession session , Runnable onComplete){
+        Player player1 = session.getPlayer1();
+        Player player2 = session.getPlayer2();
+        new BukkitRunnable(){
+            int tick = 0;
+            int boarderIndex = 0;
+
+            @Override
+            public void run() {
+
+                if (tick >= 0){
+                    cancel();
+                    onComplete.run();
+                    return;
+                }
+                // Play countdown
+                if (tick % 20 == 0 ){
+                    int secondsLeft = 2 - (tick / 20);
+                    Sound sound = secondsLeft > 0 ? Sound.BLOCK_NOTE_BLOCK_PLING : Sound.ENTITY_PLAYER_LEVELUP;
+                    float pitch = secondsLeft > 0 ? 1.0f * ((2 - secondsLeft) *0.3f) : 0.0f;
+                    player1.playSound(player1.getLocation() , sound , 1.0f , pitch);
+                    player2.playSound(player1.getLocation() , sound , 1.0f , pitch);
+                }
+                if (boarderIndex > 0 ){
+                    int prevSlot = TradeConstants.BORDER_SLOTS[boarderIndex -1 % TradeConstants.BORDER_SLOTS.length];
+                    session.getTradeInventory().setItem(prevSlot, new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
+                }
+
+                int currentSlot = TradeConstants.BORDER_SLOTS[boarderIndex % TradeConstants.BORDER_SLOTS.length];
+                session.getTradeInventory().setItem(currentSlot, new ItemStack(Material.GREEN_STAINED_GLASS_PANE));
+                boarderIndex++;
+                tick++;
+
+
+            }
+
+        }.runTaskTimer(plugin, 0L, 1L);
+
+    }
+
+
+
+
+
     public void handleTradeComplete(TradeSession session){
         Player player1 = session.getPlayer1();
         Player player2 = session.getPlayer2();
+        playTradeAnimation(session , () -> {
+            plugin.getTradeManager().endTradeSession(session);
+            var tradeInv = session.getTradeInventory();
+            transferItems(session.getPlayer1(), tradeInv, TradeConstants.PLAYER2_WINDOW);
+            transferItems(session.getPlayer2(), tradeInv, TradeConstants.PLAYER1_WINDOW);
 
-        plugin.getTradeManager().endTradeSession(session);
-        var tradeInv = session.getTradeInventory();
-        transferItems(session.getPlayer1(), tradeInv, TradeConstants.PLAYER2_WINDOW);
-        transferItems(session.getPlayer2(), tradeInv, TradeConstants.PLAYER1_WINDOW);
+            player1.closeInventory();
+            player2.closeInventory();
 
-        player1.closeInventory();
-        player2.closeInventory();
+            player1.sendTitle(
+                    ChatColor.GREEN + "Trade Complete!",
+                    ChatColor.GOLD + "Items have been exchanged!",
+                    10,
+                    40,
+                    10
+            );
+            player2.sendTitle(
+                    ChatColor.GREEN + "Trade Complete!",
+                    ChatColor.GOLD + "Items have been exchanged!",
+                    10,
+                    40,
+                    10
+            );
+            player1.sendMessage(ChatColor.GREEN + "the Trade with " + player2.getName() + " has been completed!");
+            player2.sendMessage(ChatColor.GREEN + "the Trade with " + player1.getName() + " has been completed!");
+        });
 
-        player1.sendTitle(
-                ChatColor.GREEN + "Trade Complete!",
-                ChatColor.GOLD + "Items have been exchanged!",
-                10,
-                40,
-                10
-        );
-        player2.sendTitle(
-                ChatColor.GREEN + "Trade Complete!",
-                ChatColor.GOLD + "Items have been exchanged!",
-                10,
-                40,
-                10
-        );
-        player1.sendMessage(ChatColor.GREEN + "the Trade with " + player2.getName() + " has been completed!");
-        player2.sendMessage(ChatColor.GREEN + "the Trade with " + player1.getName() + " has been completed!");
+
 
     }
 

@@ -6,4 +6,10 @@ public class TradeConstants {
     public static final int CONFIRM_BUTTON_1 =38;
     public static final int CONFIRM_BUTTON_2 =42;
     public static final int CANCEL_BUTTON =49;
+    public static final int[] BORDER_SLOTS = {
+            0, 1, 2, 3, 4, 5, 6, 7, 8,        // Top row
+            17, 26, 35, 44, 53,               // Right side
+            52, 51, 50, 48, 47, 46, 45,       // Bottom row (skipping cancel button)
+            36, 27, 18, 9                     // Left side
+    };
 }
