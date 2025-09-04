@@ -27,7 +27,7 @@ public class TradeListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e){
         Player player = (Player) e.getWhoClicked();
-        var session = plugin.getTradeManger().getActiveTrade(player);
+        var session = plugin.getTradeManager().getActiveTrade(player);
         if(session == null){
             return;
         }
@@ -97,7 +97,7 @@ public class TradeListener implements Listener {
         Player player1 = session.getPlayer1();
         Player player2 = session.getPlayer2();
 
-        plugin.getTradeManger().endTradeSession(session);
+        plugin.getTradeManager().endTradeSession(session);
         var tradeInv = session.getTradeInventory();
         transferItems(session.getPlayer1(), tradeInv, TradeConstants.PLAYER2_WINDOW);
         transferItems(session.getPlayer2(), tradeInv, TradeConstants.PLAYER1_WINDOW);
@@ -128,7 +128,7 @@ public class TradeListener implements Listener {
 
 
     private void handleCancel(TradeSession session){
-        this.plugin.getTradeManger().endTradeSession(session);
+        this.plugin.getTradeManager().endTradeSession(session);
         var tradeInv = session.getTradeInventory();
         transferItems(session.getPlayer1(), tradeInv, TradeConstants.PLAYER1_WINDOW);
         transferItems(session.getPlayer2(), tradeInv, TradeConstants.PLAYER2_WINDOW);

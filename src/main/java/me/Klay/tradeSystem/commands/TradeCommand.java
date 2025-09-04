@@ -27,13 +27,14 @@ public class TradeCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "Usage: /trade <player> or /trade accept/deny");
             return true;
         }
+        TradeManger tradeManager = plugin.getTradeManager();
         String action = args[0].toLowerCase();
         switch(action){
             case "accept":
-                tradeManger.handleTradeAccept(requester);
+                tradeManager.handleTradeAccept(requester);
                 break;
         case "deny":
-            tradeManger.handleTradeDeny(requester);
+            tradeManager.handleTradeDeny(requester);
 
             break;
             default:
@@ -41,7 +42,7 @@ public class TradeCommand implements CommandExecutor {
                 if(receiver == null){
                     sender.sendMessage(ChatColor.RED + "Player not found!");
                 }
-                tradeManger.initiateTradeRequest(requester , receiver);
+                tradeManager.initiateTradeRequest(requester , receiver);
 
         }
 
