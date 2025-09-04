@@ -85,12 +85,42 @@ public class TradeListener implements Listener {
         session.getTradeInventory().setItem(slot, newButton);
         if(!wasConfirmed){
             if (session.bothConfirmed()) {
-                //handle trade
+                handleTradeComplete(session);
             }
 
         }else {
             player.sendMessage(ChatColor.YELLOW + "Confirmation Cancelled");
         }
+
+    }
+    public void handleTradeComplete(TradeSession session){
+        Player player1 = session.getPlayer1();
+        Player player2 = session.getPlayer2();
+
+        plugin.getTradeManger().endTradeSession(session);
+        var tradeInv = session.getTradeInventory();
+        transferItems(session.getPlayer1(), tradeInv, TradeConstants.PLAYER2_WINDOW);
+        transferItems(session.getPlayer2(), tradeInv, TradeConstants.PLAYER1_WINDOW);
+
+        player1.closeInventory();
+        player2.closeInventory();
+
+        player1.sendTitle(
+                ChatColor.GREEN + "Trade Complete!",
+                ChatColor.GOLD + "Items have been exchanged!",
+                10,
+                40,
+                10
+        );
+        player2.sendTitle(
+                ChatColor.GREEN + "Trade Complete!",
+                ChatColor.GOLD + "Items have been exchanged!",
+                10,
+                40,
+                10
+        );
+        player1.sendMessage(ChatColor.GREEN + "the Trade with " + player2.getName() + " has been completed!");
+        player2.sendMessage(ChatColor.GREEN + "the Trade with " + player1.getName() + " has been completed!");
 
     }
 
