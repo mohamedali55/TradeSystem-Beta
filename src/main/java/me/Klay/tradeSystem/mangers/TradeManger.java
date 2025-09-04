@@ -2,6 +2,7 @@ package me.Klay.tradeSystem.mangers;
 
 import me.Klay.tradeSystem.gui.TradeGUI;
 import me.Klay.tradeSystem.models.TradeRequest;
+import me.Klay.tradeSystem.models.TradeSession;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -9,15 +10,15 @@ import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class TradeManger {
     private final Map<UUID, TradeRequest> tradeRequests;
+    private final Set<TradeSession> tradeSessions;
 
     public TradeManger() {
         this.tradeRequests = new HashMap<>();
+        this.tradeSessions = new HashSet<>();
     }
     public void initiateTradeRequest(Player requester , Player receiver) {
         if (!isPlayerInRange(requester, receiver)) {
@@ -61,8 +62,17 @@ public class TradeManger {
     }
     private void startTradeSession(Player player1 , Player player2) {
         var tradeInventory = TradeGUI.createTradeInventory(player1, player2);
+        TradeSession session = new TradeSession(player1, player2, tradeInventory);
+        tradeSessions.add(session);
         player1.openInventory(tradeInventory);
         player2.openInventory(tradeInventory);
+    }
+    public TradeSession getActiveTrade(Player player){
+        for (TradeSession session : tradeSessions) {
+            if(session.getPlayer1().equals(player) || session.getPlayer2().equals(player)){
+                return session;
+            }
+        }return null;
     }
 
 
