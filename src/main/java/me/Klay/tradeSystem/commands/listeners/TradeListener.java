@@ -35,6 +35,9 @@ public class TradeListener implements Listener {
         if(session == null){
             return;
         }
+        if (!e.getView().getTopInventory().equals(session.getTradeInventory())) {
+            return;
+        }
         if (!e.getInventory().equals(session.getTradeInventory())) {
             return;
         }
@@ -56,9 +59,6 @@ public class TradeListener implements Listener {
         if (session.isConfirmed(player)) {
             e.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You can't modify the trade anymore!");
-            return;
-        }
-        if (slot <= 54){
             return;
         }
         if (isPlayer1) {
