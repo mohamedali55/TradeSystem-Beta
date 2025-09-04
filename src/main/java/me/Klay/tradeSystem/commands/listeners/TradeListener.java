@@ -2,6 +2,7 @@ package me.Klay.tradeSystem.commands.listeners;
 
 import me.Klay.tradeSystem.TradeSystem;
 import me.Klay.tradeSystem.gui.TradeGUI;
+import me.Klay.tradeSystem.mangers.TradeManger;
 import me.Klay.tradeSystem.models.TradeSession;
 import me.Klay.tradeSystem.utils.TradeConstants;
 import org.bukkit.ChatColor;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -74,6 +76,31 @@ public class TradeListener implements Listener {
 
 
     }
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent e){
+        Player player = (Player) e.getPlayer();
+        TradeManger tradeManger = plugin.getTradeManager();
+        TradeSession session = tradeManger.getActiveTrade(player);
+        if(session != null && e.getInventory().equals(session.getTradeInventory())){
+            handleCancel(session);
+        }
+        Player otherPlayer = session.isPlayer1(player) ? session.getPlayer2() : session.getPlayer1();
+        otherPlayer.sendMessage(ChatColor.RED + player.getName() + " has closed the trade!");
+    }
+    //Notify other player
+    @EventHandler
+    public void onPlayerQuit(InventoryCloseEvent e){
+        Player player = (Player) e.getPlayer();
+        TradeManger tradeManger = plugin.getTradeManager();
+        TradeSession session = tradeManger.getActiveTrade(player);
+        if(session != null ){
+            handleCancel(session);
+        }
+        Player otherPlayer = session.isPlayer1(player) ? session.getPlayer2() : session.getPlayer1();
+        otherPlayer.sendMessage(ChatColor.RED + player.getName() + " has quit the trade!");
+    }
+
+
     private void handleConfirm(Player player, TradeSession session, int slot){
         boolean isPlayer1 = session.isPlayer1(player);
 
@@ -86,12 +113,24 @@ public class TradeListener implements Listener {
         var newButton = TradeGUI.createConfirmButton(player, !wasConfirmed);
         session.getTradeInventory().setItem(slot, newButton);
         if(!wasConfirmed){
+            //confirmed Sound
+            player.playSound(player.getLocation() , Sound.BLOCK_NOTE_BLOCK_BELL , 1.0f , 1.5f);
+            Player otherPlayer = isPlayer1 ? session.getPlayer2() : session.getPlayer1();
+            otherPlayer.playSound(otherPlayer.getLocation() , Sound.BLOCK_NOTE_BLOCK_BELL , 1.0f , 1.5f);
+
+
             if (session.bothConfirmed()) {
                 handleTradeComplete(session);
             }
 
         }else {
             player.sendMessage(ChatColor.YELLOW + "Confirmation Cancelled");
+
+            //UnconfirmSound
+            player.playSound(player.getLocation() , Sound.BLOCK_NOTE_BLOCK_BELL , 1.0f , 0.8f);
+            Player otherPlayer = isPlayer1 ? session.getPlayer2() : session.getPlayer1();
+            otherPlayer.playSound(otherPlayer.getLocation() , Sound.BLOCK_NOTE_BLOCK_BELL , 1.0f , 0.8f);
+
         }
 
     }
