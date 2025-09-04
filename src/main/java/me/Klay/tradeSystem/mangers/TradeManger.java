@@ -74,6 +74,9 @@ public class TradeManger {
             }
         }return null;
     }
+    public void endTradeSession(TradeSession session){
+        tradeSessions.remove(session);
+    }
 
 
     public void handleTradeDeny(Player player) {

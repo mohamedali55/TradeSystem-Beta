@@ -41,6 +41,16 @@ public class TradeSession {
     public Inventory getTradeInventory() {
         return tradeInventory;
     }
+    public void setConfirmed(Player player , boolean confirmed){
+        if(isPlayer1(player)){
+            player1Confirmed = confirmed;
+        }else{
+            player2Confirmed = confirmed;
+        }
+    }
+    public boolean bothConfirmed(){
+        return isPlayer1Confirmed() && isPlayer2Confirmed();
+    }
 
 
 }
