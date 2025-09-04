@@ -9,14 +9,17 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
 public class TradeManger {
     private final Map<UUID, TradeRequest> tradeRequests;
     private final Set<TradeSession> tradeSessions;
+    private final JavaPlugin plugin;
 
-    public TradeManger() {
+    public TradeManger(JavaPlugin plugin) {
+        this.plugin = plugin;
         this.tradeRequests = new HashMap<>();
         this.tradeSessions = new HashSet<>();
     }

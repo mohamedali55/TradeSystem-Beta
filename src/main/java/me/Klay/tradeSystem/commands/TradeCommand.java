@@ -1,5 +1,6 @@
 package me.Klay.tradeSystem.commands;
 
+import me.Klay.tradeSystem.TradeSystem;
 import me.Klay.tradeSystem.mangers.TradeManger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -8,10 +9,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class TradeCommand implements CommandExecutor {
+    private final TradeSystem plugin;
 
-    private final TradeManger tradeManger;
-    public TradeCommand(TradeManger tradeManger) {
-        this.tradeManger = tradeManger;
+    public TradeCommand(TradeSystem plugin) {
+        this.plugin = plugin;
     }
 
     @Override
